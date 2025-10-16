@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Cod3Craftsman/Virtual-Assistant#readme",
+  "bugs": {
+    "url": "https://github.com/Cod3Craftsman/Virtual-Assistant/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cod3Craftsman/Virtual-Assistant.git"
+  },
+  "license": "ISC",
+  "author": "Ankit Gupta",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
+    "cookieparser": "^0.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.1",
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.10"
+  }
+}
