@@ -7,7 +7,7 @@ import { userDataContext } from "../context/UserContext"
 import axios from "axios"
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false)
-  const { serverUrl } = useContext(userDataContext)
+  const { serverUrl, userData, setUserData } = useContext(userDataContext)
   const navigate = useNavigate()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -20,10 +20,12 @@ function SignUp() {
     setLoading(true)
     try {
       let result = await axios.post(`${serverUrl}/api/auth/signup`, { name, email, password }, { withCredentials: true })
-      console.log(result)
+      setUserData(result.data)
       setLoading(false)
+      navigate("/customize")
     } catch (error) {
       console.log(error)
+      setUserData(null)
       setLoading(false)
       setErr(error.response.data.message)
     }
