@@ -2,8 +2,9 @@ import { useContext } from 'react'
 import { userDataContext } from '../context/UserContext'
 import { useNavigate } from "react-router-dom"
 import axios from 'axios'
+import { useEffect } from 'react'
 function Home() {
-  const { userData, serverUrl, setUserData } = useContext(userDataContext)
+  const { userData, serverUrl, setUserData, getGeminiResponse } = useContext(userDataContext)
   const navigate = useNavigate()
   const handleLogOut = async () => {
     try {
@@ -14,6 +15,30 @@ function Home() {
       console.log(error)
     }
   }
+
+  const speak = (text) =>{
+    const utterance = new SpeechSynthesisUtterance(text)
+    window.speechSynthesis.speak(utterance)
+  }
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    const recognition = new SpeechRecognition()
+    recognition.continuous = true,
+      recognition.lang = 'en-US'
+    recognition.onresult = async (e) => {
+      const transcript = e.results[e.results.length - 1][0].transcript.trim()
+      console.log("command : ", transcript)
+      if (transcript.toLowerCase().includes(userData.assistantName.toLowerCase())) {
+        const data = await getGeminiResponse(transcript)
+        console.log(data)
+        speak(data.response)
+      }
+    }
+    recognition.start()
+
+  }, [])
+
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#02023d] flex justify-center items-center flex-col gap-[15px]">
       <button className="min-w-[150px] h-[60px] mt-[30px] text-black bg-white absolute rounded-full font-semibold text-[19px] top-[20px] right-[20px] cursor-pointer" onClick={() => handleLogOut()}>Log Out</button>
