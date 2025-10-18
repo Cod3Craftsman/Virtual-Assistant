@@ -7,9 +7,10 @@ import image5 from "../assets/image5.png"
 import image6 from "../assets/image6.jpeg"
 import image7 from "../assets/image7.jpeg"
 import { RiImageAddLine } from "react-icons/ri"
-import { useContext, useRef, useState } from "react"
-import { userDataContext } from "../Context/UserContext"
-import {Navigate, useNavigate} from "react-router-dom"
+import { useContext, useRef } from "react"
+import { userDataContext } from "../context/UserContext"
+import { useNavigate } from "react-router-dom"
+import { MdKeyboardBackspace } from "react-icons/md"
 function Customize() {
   const { serverUrl, userData, setUserData, frontendImage, setFrontendImage, backendImage, setBackendImage, selectedImage, setSelectedImage } = useContext(userDataContext)
   const navigate = useNavigate()
@@ -21,6 +22,8 @@ function Customize() {
   }
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#030353] flex justify-center items-center flex-col p-[20px]">
+      <MdKeyboardBackspace className="absolute text-white top-[30px] left-[30px] w-[25px] h-[25px] cursor-pointer" onClick={() => navigate("/")} />
+
       <h1 className="text-white text-[30px] mb-[40px] text-center">Select your <span className="text-blue-200">Assistant Image</span></h1>
       <div className="w-full max-w-[900px] flex justify-center items-center flex-wrap gap-[15px]">
         <Card image={image1} />
@@ -37,8 +40,8 @@ function Customize() {
         </div>
         <input type="file" accept="image/*" ref={inputImage} hidden onChange={handleImage} />
       </div>
-      {selectedImage && <button className="min-w-[150px] h-[60px] mt-[30px] bg-white rounded-full font-semibold text-[19px] cursor-pointer" onClick={()=> navigate("/customize2")}>Next</button>}
-      
+      {selectedImage && <button className="min-w-[150px] h-[60px] mt-[30px] bg-white rounded-full font-semibold text-[19px] cursor-pointer" onClick={() => navigate("/customize2")}>Next</button>}
+
     </div>
   )
 }
