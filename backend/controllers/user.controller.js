@@ -53,6 +53,7 @@ export const askToAssistant = async (req, res) => {
       });
     }
     const gemResult = await JSON.parse(jsonMatch[0]);
+    console.log(gemResult)
     const type = gemResult.type;
     switch (type) {
       case "get-date":
@@ -66,7 +67,7 @@ export const askToAssistant = async (req, res) => {
         return res.json({
           type,
           userInput: gemResult.userInput,
-          response: `Current time is ${moment().format("hh:mm:A")}`,
+          response: `Current time is ${moment().format("hhmmA")}`,
         });
 
       case "get-day":
@@ -83,13 +84,13 @@ export const askToAssistant = async (req, res) => {
           response: `Current month is ${moment().format("MMMM")}`,
         });
 
-      case "google_search":
-      case "youtube_search":
-      case "youtube_play":
+      case "google-search":
+      case "youtube-search":
+      case "youtube-play":
       case "general":
-      case "calculator_open":
-      case "instagram_open":
-      case "facebook_open":
+      case "calculator-open":
+      case "instagram-open":
+      case "facebook-open":
       case "weather-show":
         return res.json({
           type,
