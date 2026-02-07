@@ -23,18 +23,19 @@ Instructions:
 - "response": A short voice-friendly reply, e.g., "Sure, playing it now", "Here's what I found", "Today is Tuesday", etc.
 
 Type meanings:
-- "general": if it's a factual or informational question.
+- "general": if it's a factual or informational question.If someone asks such a question whose answer you know then keep it in general category and give short answer.
 - "google_search": if user wants to search something on Google.
 - "youtube_search": if user wants to search something on YouTube.
 - "youtube_play": if user wants to directly play a video or song.
 - "calculator_open": if user wants to open a calculator.
 - "instagram_open": if user wants to open Instagram.
 - "facebook_open": if user wants to open Facebook.
+- "whatsapp-open": if user wants to open Whatsapp.
 - "weather-show": if user wants to know weather.
-- "get_time": if user asks for current time.
-- "get_date": if user asks for today's date.
-- "get_day": if user asks what day it is.
-- "get_month": if user asks for the current month.
+- "get-time": if user asks for current time.
+- "get-date": if user asks for today's date.
+- "get-day": if user asks what day it is.
+- "get-month": if user asks for the current month.
 
 Important:
 - Use ${userName} if someone asks who created you.
@@ -44,12 +45,29 @@ now your userInput- ${command}
 `;
 
     const result = await axios.post(apiUrl, {
-      "contents": [{ "parts": [{ "text": prompt }] }],
+      contents: [{ parts: [{ text: prompt }] }],
     });
 
-    return result.data.candidates[0].content.parts[0].text;
+    const text = result.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      console.error("Invalid Gemini response:", result.data);
+      return null;
+    }
+
+    return text;
   } catch (error) {
-    console.log(error);
+    if (error.response?.status === 429) {
+      console.error("Gemini rate limit exceeded");
+      return JSON.stringify({
+        type: "general",
+        userInput: command,
+        response: "I'm a bit busy right now. Please try again in a moment.",
+      });
+    }
+
+    console.error("Gemini error:", error.message);
+    return null;
   }
 };
 

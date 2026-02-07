@@ -3,13 +3,18 @@ import { userDataContext } from '../context/UserContext'
 import { useNavigate } from "react-router-dom"
 import axios from 'axios'
 import { useEffect } from 'react'
+import userImg from "../../public/user.gif"
+import aiImg from "../../public/ai.gif"
 function Home() {
   const { userData, serverUrl, setUserData, getGeminiResponse } = useContext(userDataContext)
   const navigate = useNavigate()
   const [listening, setListening] = useState(false)
+  const [userText, setUserText] = useState("")
+  const [aiText, setAiText] = useState("")
   const isSpeakingRef = useRef(false)
   const recognitionRef = useRef(null)
   const synth = window.speechSynthesis
+  const lastCommandTime = useRef(0);
   const handleLogOut = async () => {
     try {
       const result = await axios.get(`${serverUrl}/api/auth/logout`, { withCredentials: true })
@@ -36,6 +41,12 @@ function Home() {
   const speak = (text) => {
     if (!text) return;
     const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = 'hi-IN';
+    const voices = window.speechSynthesis.getVoices()
+    const hindiVoice = voices.find(v => v.lang === 'hi-IN');
+    if (hindiVoice) {
+      utterance.voice = hindiVoice;
+    }
     isSpeakingRef.current = true
     utterance.onend = () => {
       isSpeakingRef.current = false;
@@ -46,7 +57,12 @@ function Home() {
 
 
   const handleCommand = (data) => {
+    if (!data) {
+      console.error("No data received from assistant");
+      return;
+    }
     const { type, userInput, response } = data
+    speak(response)
 
     if (type === 'google-search') {
       const query = encodeURIComponent(userInput)
@@ -75,6 +91,10 @@ function Home() {
       window.open(`https://www.facebook.com/`, '_blank')
     }
 
+    if (type === 'whatsapp-open') {
+      window.open(`https://www.whatsapp.com/`, '_blank')
+    }
+
     if (type === 'weather-show') {
       const query = encodeURIComponent(userInput || 'current weather')
       window.open(`https://www.google.com/search?q=${query}`, '_blank')
@@ -97,7 +117,6 @@ function Home() {
       if (!isSpeakingRef.current && !isrecognizingRef.current) {
         try {
           recognition.start()
-          console.log("recognition requested to start")
         } catch (error) {
           if (error.name !== "InvalidStateError") {
             console.log("start error:", error)
@@ -107,13 +126,11 @@ function Home() {
     }
 
     recognition.onstart = () => {
-      console.log("Recognition Started")
       isrecognizingRef.current = true
       setListening(true)
     }
 
     recognition.onend = () => {
-      console.log("Recognition ended")
       isrecognizingRef.current = false
       setListening(false)
     }
@@ -139,16 +156,30 @@ function Home() {
 
 
     recognition.onresult = async (e) => {
-      const transcript = e.results[e.results.length - 1][0].transcript.trim()
-      console.log("command : ", transcript)
+      if (!userData || !userData.assistantName) return;
+
+      const transcript = e.results[e.results.length - 1][0].transcript.trim();
+      console.log("command : ", transcript);
+
       if (transcript.toLowerCase().includes(userData.assistantName.toLowerCase())) {
-        recognition.stop()
-        isrecognizingRef.current = false
-        setListening(false)
-        const data = await getGeminiResponse(transcript)
-        handleCommand(data)
+        setAiText("")
+        setUserText(transcript)
+        const now = Date.now();
+        if (now - lastCommandTime.current < 3000) return;
+        lastCommandTime.current = now;
+
+        recognition.stop();
+        isrecognizingRef.current = false;
+        setListening(false);
+
+        const data = await getGeminiResponse(transcript);
+        console.log("Gemini returned: ", data);
+
+        handleCommand(data);
+        setAiText(data.response)
+        setUserText("")
       }
-    }
+    };
 
     const fallback = setInterval(() => {
       if (!isSpeakingRef.current && !isrecognizingRef.current) {
@@ -174,7 +205,8 @@ function Home() {
         <img src={userData?.assistantImage} alt="" className='h-full object-cover' />
       </div>
       <h1 className='text-white text-[18px] font-semibold'>Welcome {userData?.name ? userData.name.charAt(0).toUpperCase() + userData.name.slice(1) : ''} , I'm {userData?.assistantName}</h1>
-
+      {aiText && <img src={aiImg} alt="" className='w-[200px]'/>}
+      {!aiText && <img src={userImg} alt="" className='w-[200px]'/>}
     </div>
   )
 }

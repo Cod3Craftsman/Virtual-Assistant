@@ -23,6 +23,7 @@ function UserContext({ children }) {
       return result.data
     } catch (error) {
       console.log(error)
+      return null;
     }
   }
 

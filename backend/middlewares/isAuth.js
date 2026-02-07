@@ -6,11 +6,12 @@ const isAuth = async (req, res, next) => {
     if (!token) {
       return res.status(400).json({ message: "token not found" });
     }
-    const verifyToken = await jwt.verify(token, process.env.JWT_SECRET);
+    const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = verifyToken.userId;
     next();
   } catch (error) {
-    return res.status(500).json({ message: "isAuth error" });
+    console.log("Auth error",error.message)
+    return res.status(500).json({ message: "Invalid or expired token" });
   }
 };
 
