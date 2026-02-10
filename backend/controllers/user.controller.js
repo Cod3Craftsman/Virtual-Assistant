@@ -30,7 +30,7 @@ export const updateAssistant = async (req, res) => {
         assistantName,
         assistantImage,
       },
-      { new: true }
+      { new: true },
     ).select("-password");
     return res.status(200).json(user);
   } catch (error) {
@@ -42,7 +42,7 @@ export const askToAssistant = async (req, res) => {
   try {
     const { command } = req.body;
     const user = await User.findById(req.userId);
-    user.history.push(command)
+    user.history.push(command);
     user.save();
     const userName = user.name;
     const assistantName = user.assistantName;
@@ -55,7 +55,7 @@ export const askToAssistant = async (req, res) => {
       });
     }
     const gemResult = await JSON.parse(jsonMatch[0]);
-    console.log(gemResult)
+    console.log(gemResult);
     const type = gemResult.type;
     switch (type) {
       case "get-date":
@@ -66,10 +66,11 @@ export const askToAssistant = async (req, res) => {
         });
 
       case "get-time":
+        const currentTime = new Date().toLocaleTimeString(); 
         return res.json({
           type,
           userInput: gemResult.userInput,
-          response: `Current time is ${moment().format("hhmmA")}`,
+          response: `Current time is ${currentTime}`,
         });
 
       case "get-day":
