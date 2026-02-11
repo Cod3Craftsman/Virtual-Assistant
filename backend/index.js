@@ -6,7 +6,6 @@ import authRouter from "./routes/auth.router.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.router.js";
-import geminiResponse from "./gemini.js";
 
 const app = express();
 app.use(
@@ -28,7 +27,12 @@ app.use("/api/user", userRouter);
 
 
 
-app.listen(port, () => {
-  connectDb();
-  console.log(`Server started on port ${port}`);
-});
+connectDb()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server started on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Database connection failed", err);
+  });
