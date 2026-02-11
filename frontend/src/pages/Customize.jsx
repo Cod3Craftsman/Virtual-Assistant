@@ -21,7 +21,7 @@ function Customize() {
     setFrontendImage(URL.createObjectURL(file))
   }
   return (
-    <div className="w-full h-[100vh] bg-gradient-to-t from-[black] to-[#030353] flex justify-center items-center flex-col p-[20px]">
+    <div className="w-full  bg-gradient-to-t from-[black] to-[#030353] flex justify-center items-center flex-col p-[20px]">
       <MdKeyboardBackspace className="absolute text-white top-[30px] left-[30px] w-[25px] h-[25px] cursor-pointer" onClick={() => navigate("/")} />
 
       <h1 className="text-white text-[30px] mb-[40px] text-center">Select your <span className="text-blue-200">Assistant Image</span></h1>

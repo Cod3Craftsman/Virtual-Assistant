@@ -188,92 +188,93 @@ function Home() {
   }, [])
 
   return (
-  <div className="w-full min-h-[100dvh] bg-gradient-to-t from-black to-[#02023d] flex flex-col items-center gap-[15px] pt-[60px] lg:pt-0 lg:justify-center relative overflow-hidden"> 
-    {/* Mobile menu icon */}
-    <CgMenuRight
-      className='lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px] cursor-pointer'
-      onClick={() => setHam(true)}
-    />
-
-    {/* Mobile menu */}
-    <div
-      className={`absolute top-0 w-full h-full bg-[#00000053] backdrop-blur-lg p-[20px] flex flex-col gap-[20px] items-start ${
-        ham ? "translate-x-0" : "translate-x-full"
-      } transition-transform lg:hidden`}
-    >
-      <RxCross1
-        className='text-white absolute top-[20px] right-[20px] w-[25px] h-[25px] cursor-pointer'
-        onClick={() => setHam(false)}
+    <div className="w-full bg-gradient-to-t from-black to-[#02023d] flex flex-col items-center gap-[15px] pt-[60px] lg:pt-0 lg:justify-center relative overflow-y-auto">
+      {/* Mobile menu icon */}
+      <CgMenuRight
+        className='lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px] cursor-pointer'
+        onClick={() => setHam(true)}
       />
 
+      {/* Mobile menu */}
+      <div
+        className={`absolute top-0 w-full h-full bg-[#00000053] backdrop-blur-lg p-[20px] flex flex-col gap-[20px] items-start ${ham ? "translate-x-0" : "translate-x-full"
+          } transition-transform lg:hidden`}
+      >
+        <RxCross1
+          className='text-white absolute top-[20px] right-[20px] w-[25px] h-[25px] cursor-pointer'
+          onClick={() => setHam(false)}
+        />
+
+        <button
+          className="min-w-[150px] h-[60px] text-black bg-white rounded-full font-semibold text-[19px]"
+          onClick={handleLogOut}
+        >
+          Log Out
+        </button>
+
+        <button
+          className="min-w-[150px] h-[60px] text-black bg-white rounded-full font-semibold text-[19px] px-[20px]"
+          onClick={() => navigate("/customize")}
+        >
+          Customize Your Assistant
+        </button>
+
+        <div className='w-full h-[2px] bg-gray-400'></div>
+        <h1 className='text-white font-semibold text-[19px]'>History</h1>
+
+        <div className='w-full h-[400px] overflow-y-auto flex flex-col gap-[20px]'>
+          {userData.history?.map((his, index) => (
+            <span key={index} className='text-gray-200 text-[18px]'>
+              {his}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop buttons */}
       <button
-        className="min-w-[150px] h-[60px] text-black bg-white rounded-full font-semibold text-[19px]"
+        className="min-w-[150px] h-[60px] text-black bg-white absolute rounded-full font-semibold text-[19px] top-[20px] right-[20px] hidden lg:block"
         onClick={handleLogOut}
       >
         Log Out
       </button>
 
       <button
-        className="min-w-[150px] h-[60px] text-black bg-white rounded-full font-semibold text-[19px] px-[20px]"
+        className="min-w-[150px] h-[60px] text-black bg-white absolute rounded-full font-semibold text-[19px] top-[100px] right-[20px] px-[20px] hidden lg:block"
         onClick={() => navigate("/customize")}
       >
         Customize Your Assistant
       </button>
 
-      <div className='w-full h-[2px] bg-gray-400'></div>
-      <h1 className='text-white font-semibold text-[19px]'>History</h1>
+      {/* Assistant image (responsive height) */}
+      <div className='w-[260px] h-[320px] sm:w-[300px] sm:h-[400px] flex justify-center items-center overflow-hidden rounded-3xl shadow-lg'>
+        <img
+          src={userData?.assistantImage}
+          alt=""
+          className='h-full object-cover'
+        />
+      </div>
 
-      <div className='w-full h-[400px] overflow-y-auto flex flex-col gap-[20px]'>
-        {userData.history?.map((his, index) => (
-          <span key={index} className='text-gray-200 text-[18px]'>
-            {his}
-          </span>
-        ))}
+      {/* Welcome text */}
+      <h1 className='text-white text-[18px] font-semibold text-center px-4'>
+        Welcome {userData?.name
+          ? userData.name.charAt(0).toUpperCase() + userData.name.slice(1)
+          : ""}{" "}
+        , I'm {userData?.assistantName}
+      </h1>
+
+      {/* GIF */}
+      {aiText && <img src={aiImg} alt="" className='w-[160px] sm:w-[200px]' />}
+      {!aiText && <img src={userImg} alt="" className='w-[160px] sm:w-[200px]' />}
+
+      {/* Command text */}
+      <div className="w-[90%] max-w-[500px] min-h-[60px] flex items-center justify-center text-center px-4">
+        <p className="text-white font-semibold text-[18px] break-words">
+          {userText ? userText : aiText ? aiText : ""}
+        </p>
       </div>
     </div>
-
-    {/* Desktop buttons */}
-    <button
-      className="min-w-[150px] h-[60px] text-black bg-white absolute rounded-full font-semibold text-[19px] top-[20px] right-[20px] hidden lg:block"
-      onClick={handleLogOut}
-    >
-      Log Out
-    </button>
-
-    <button
-      className="min-w-[150px] h-[60px] text-black bg-white absolute rounded-full font-semibold text-[19px] top-[100px] right-[20px] px-[20px] hidden lg:block"
-      onClick={() => navigate("/customize")}
-    >
-      Customize Your Assistant
-    </button>
-
-    {/* Assistant image (responsive height) */}
-    <div className='w-[260px] h-[320px] sm:w-[300px] sm:h-[400px] flex justify-center items-center overflow-hidden rounded-3xl shadow-lg'>
-      <img
-        src={userData?.assistantImage}
-        alt=""
-        className='h-full object-cover'
-      />
-    </div>
-
-    {/* Welcome text */}
-    <h1 className='text-white text-[18px] font-semibold text-center px-4'>
-      Welcome {userData?.name
-        ? userData.name.charAt(0).toUpperCase() + userData.name.slice(1)
-        : ""}{" "}
-      , I'm {userData?.assistantName}
-    </h1>
-
-    {/* GIF */}
-    {aiText && <img src={aiImg} alt="" className='w-[160px] sm:w-[200px]' />}
-    {!aiText && <img src={userImg} alt="" className='w-[160px] sm:w-[200px]' />}
-
-    {/* Command text */}
-    <h1 className='text-white font-semibold text-[18px] text-center px-4'>
-      {userText ? userText : aiText ? aiText : null}
-    </h1>
-  </div>
-)
+  )
 }
 
 export default Home
