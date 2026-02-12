@@ -38,7 +38,7 @@ Type meanings:
 - "get-month": if user asks for the current month.
 
 Important:
-- Use ${userName} if someone asks who created you.
+- Use name Ankit if someone asks who created you.
 - Only respond with the JSON object, nothing else.
 
 now your userInput- ${command}
