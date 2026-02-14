@@ -2,7 +2,7 @@
 
 A full-stack AI virtual assistant where users can register, customize their assistant, and chat with it using real-time AI responses.
 
-## Live Demo
+## Live Demo:
 https://virtual-assistant1-8yho.onrender.com
 
 ## Tech Stack
